@@ -11,15 +11,24 @@ app.get("/api/notes", function (req, res) {
     res.sendFile(path.join(__dirname, "./db/db.json"));
 });
 
+// app.post("/api/notes", function (req, res) {
+//     const newNote = req.body;
+
+//     console.log(newNote);
+//     res.sendFile(path.join(__dirname, "./db/db.json").push(newNote));
+    
+// });
+
+app.use(express.static("public"));
+
 app.get("/notes", function (req, res) {
-    res.sendFile(path.join(__dirname, "notes.html"));
+    res.sendFile(path.join(__dirname, "./public/notes.html"));
 });
 
 app.get("*", function (req, res) {
-    res.sendFile(path.join(__dirname, "index.html"));
+    res.sendFile(path.join(__dirname, "./public/index.html"));
 });
 
-
-app.listen(PORT, function() {
+app.listen(PORT, function () {
     console.log("Server listening on: http://localhost:" + PORT);
-  });
+});
