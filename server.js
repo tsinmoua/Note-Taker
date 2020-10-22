@@ -14,28 +14,52 @@ app.get("/api/notes", function (req, res) {
 });
 
 app.post("/api/notes", function (req, res) {
-    const newNote = req.body;
-    console.log(newNote);
-
-    newNote.id = uuidv4();
-    console.log(newNote);
-
+    req.body.id = uuidv4();
+    const newNote = req.body
+    // console.log(newNote);
 
     fs.readFile('./db/db.json', 'utf8', function readFileCallback(err, data) {
         if (err) {
             console.log(err);
         } else {
-            obj = JSON.parse(data);
-            // console.log(obj);
+            let obj = JSON.parse(data);
+            console.log(obj);
             obj.push(newNote);
             fs.writeFile('./db/db.json', JSON.stringify(obj), 'utf8', function (err) {
                 if (err) {
                     return console.log(err);
                 }
-                // console.log("Success!");
+                console.log(obj);
+                console.log("Successfully Created Note");
             });
         };
     });
+});
+
+app.delete("/api/notes/:id", function (req, res) {
+    const chosen = req.params.id
+    // console.log(chosen);
+
+    fs.readFile('./db/db.json', 'utf8', function readFileCallback(err, data) {
+        if (err) {
+            console.log(err);
+        } else {
+            let obj = JSON.parse(data);
+            // console.log(obj);
+
+            const deleted = obj.find(data => data.id === chosen);
+
+            if (obj.find(data => data.id === chosen)) {
+                obj = obj.filter(data => data.id !== chosen)
+                fs.writeFile('./db/db.json', JSON.stringify(obj), 'utf8', function (err) {
+                    if (err) {
+                        return console.log(err);
+                    }
+                    console.log("Successfully Deleted Note");
+                });
+            }
+        }
+    })
 });
 
 app.use(express.static("public"));
