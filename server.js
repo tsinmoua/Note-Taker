@@ -23,17 +23,41 @@ app.post("/api/notes", function (req, res) {
             console.log(err);
         } else {
             let obj = JSON.parse(data);
-            console.log(obj);
+            // console.log(obj);
             obj.push(newNote);
             fs.writeFile('./db/db.json', JSON.stringify(obj), 'utf8', function (err) {
                 if (err) {
                     return console.log(err);
+                } else {
+                    // console.log(obj);
+                    // console.log("Successfully Created Note");
+                    res.sendFile(path.join(__dirname, "./db/db.json"));
                 }
-                console.log(obj);
-                console.log("Successfully Created Note");
+
             });
         };
     });
+});
+
+app.get("/api/notes/:id", function (req, res) {
+    var chosen = req.params.id;
+
+    // console.log(chosen);
+
+    fs.readFile('./db/db.json', 'utf8', function readFileCallback(err, data) {
+        if (err) {
+            console.log(err);
+        } else {
+            let obj = JSON.parse(data);
+            for (var i = 0; i < obj.length; i++) {
+                if (chosen === obj[i].id) {
+                    return res.json(obj[i]);
+                };
+                return res.json(`There are no notes with the id: ${chosen}`);
+            }
+        }
+    });
+
 });
 
 app.delete("/api/notes/:id", function (req, res) {
@@ -54,8 +78,10 @@ app.delete("/api/notes/:id", function (req, res) {
                 fs.writeFile('./db/db.json', JSON.stringify(obj), 'utf8', function (err) {
                     if (err) {
                         return console.log(err);
+                    } else {
+                        // console.log("Successfully Deleted Note");
+                        res.sendFile(path.join(__dirname, "./db/db.json"));
                     }
-                    console.log("Successfully Deleted Note");
                 });
             }
         }
