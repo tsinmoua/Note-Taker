@@ -8,11 +8,14 @@ const PORT = process.env.PORT || 3000;
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(express.static("public"));
 
+// Shows all the notes in JSON format when goes to /api/notes
 app.get("/api/notes", function (req, res) {
     res.sendFile(path.join(__dirname, "./db/db.json"));
 });
 
+// Posts notes to the JSON file whenever user sends a post request with ajax
 app.post("/api/notes", function (req, res) {
     req.body.id = uuidv4();
     const newNote = req.body
@@ -33,33 +36,12 @@ app.post("/api/notes", function (req, res) {
                     // console.log("Successfully Created Note");
                     res.sendFile(path.join(__dirname, "./db/db.json"));
                 }
-
             });
         };
     });
 });
 
-app.get("/api/notes/:id", function (req, res) {
-    var chosen = req.params.id;
-
-    // console.log(chosen);
-
-    fs.readFile('./db/db.json', 'utf8', function readFileCallback(err, data) {
-        if (err) {
-            console.log(err);
-        } else {
-            let obj = JSON.parse(data);
-            for (var i = 0; i < obj.length; i++) {
-                if (chosen === obj[i].id) {
-                    return res.json(obj[i]);
-                };
-                return res.json(`There are no notes with the id: ${chosen}`);
-            }
-        }
-    });
-
-});
-
+// Deletes notes to the JSON file whenever user sends a delete request with ajax
 app.delete("/api/notes/:id", function (req, res) {
     const chosen = req.params.id
     // console.log(chosen);
@@ -87,8 +69,6 @@ app.delete("/api/notes/:id", function (req, res) {
         }
     })
 });
-
-app.use(express.static("public"));
 
 app.get("/notes", function (req, res) {
     res.sendFile(path.join(__dirname, "./public/notes.html"));
