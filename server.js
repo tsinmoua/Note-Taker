@@ -73,7 +73,7 @@ app.delete("/api/notes/:id", function (req, res) {
 
             const deleted = obj.find(data => data.id === chosen);
 
-            if (obj.find(data => data.id === chosen)) {
+            if (deleted) {
                 obj = obj.filter(data => data.id !== chosen)
                 fs.writeFile('./db/db.json', JSON.stringify(obj), 'utf8', function (err) {
                     if (err) {
